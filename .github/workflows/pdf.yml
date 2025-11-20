@@ -16,7 +16,7 @@ jobs:
       - name: Atualizar pacotes
         run: sudo apt update
 
-      - name: Instalar Pandoc + LaTeX mínimo necessário
+      - name: Instalar Pandoc + LaTeX necessário
         run: |
           sudo apt install -y pandoc \
             texlive-latex-base \
@@ -25,9 +25,9 @@ jobs:
             texlive-latex-extra \
             wget
 
-      - name: Baixar template Eisvogel (link atualizado)
+      - name: Baixar template Eisvogel atualizado
         run: |
-          wget https://raw.githubusercontent.com/Wandmalfarbe/pandoc-latex-template/master/eisvogel.tex -O eisvogel.tex
+          wget https://raw.githubusercontent.com/Wandmalfarbe/pandoc-latex-template/master/template.tex -O eisvogel.tex
 
       - name: Criar pasta docs/
         run: mkdir -p docs
@@ -39,6 +39,14 @@ jobs:
             --template eisvogel.tex \
             --listings \
             --toc \
+            --pdf-engine=xelatex \
             --metadata=title:"Dev Notes – CI/CD, Pipelines & TMMi" \
-            --metadata=subtitle:"Estudos, práticas e fundamentos para equipes de Engenharia & QA" \
-            --metadata=author:"Raquel
+            --metadata=subtitle:"Estudos, práticas e fundamentos para Engenharia e Qualidade" \
+            --metadata=author:"Raquel G. de Souza" \
+            -o docs/dev-notes.pdf
+
+      - name: Publicar PDF como artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: dev-notes-pdf
+          path: docs/dev-notes.pdf
