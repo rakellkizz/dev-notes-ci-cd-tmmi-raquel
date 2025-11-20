@@ -13,22 +13,21 @@ jobs:
       - name: Checkout do repositório
         uses: actions/checkout@v4
 
-      - name: Instalar Pandoc
-        run: |
-          sudo apt update
-          sudo apt install -y pandoc
+      - name: Atualizar pacotes
+        run: sudo apt update
 
-      - name: Instalar LaTeX mínimo necessário
+      - name: Instalar Pandoc + LaTeX mínimo necessário
         run: |
-          sudo apt install -y \
+          sudo apt install -y pandoc \
             texlive-latex-base \
             texlive-fonts-recommended \
+            texlive-fonts-extra \
             texlive-latex-extra \
-            texlive-fonts-extra
+            wget
 
-      - name: Baixar Template Eisvogel
+      - name: Baixar template Eisvogel (link atualizado)
         run: |
-          wget https://raw.githubusercontent.com/Wandmalfarbe/pandoc-latex-template/master/templates/eisvogel.tex -O eisvogel.tex
+          wget https://raw.githubusercontent.com/Wandmalfarbe/pandoc-latex-template/master/eisvogel.tex -O eisvogel.tex
 
       - name: Criar pasta docs/
         run: mkdir -p docs
@@ -42,11 +41,4 @@ jobs:
             --toc \
             --metadata=title:"Dev Notes – CI/CD, Pipelines & TMMi" \
             --metadata=subtitle:"Estudos, práticas e fundamentos para equipes de Engenharia & QA" \
-            --metadata=author:"Raquel G. de Souza" \
-            -o docs/DevNotes.pdf
-
-      - name: Upload do PDF como artefato
-        uses: actions/upload-artifact@v4
-        with:
-          name: devnotes-pdf
-          path: docs/DevNotes.pdf
+            --metadata=author:"Raquel
