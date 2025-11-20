@@ -10,41 +10,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout do repositório
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Instalar Pacotes Necessários
+      - name: Instalar dependências
         run: |
           sudo apt update
-          sudo apt install -y pandoc \
-            texlive \
-            texlive-xetex \
-            texlive-latex-extra \
-            unzip wget
+          sudo apt install -y pandoc texlive texlive-latex-extra texlive-xetex unzip wget
 
-      - name: Baixar Template Eisvogel Simples
+      - name: Baixar Eisvogel completo
         run: |
           wget https://github.com/Wandmalfarbe/pandoc-latex-template/archive/refs/heads/master.zip -O eisvogel.zip
           unzip eisvogel.zip
-          cp pandoc-latex-template-master/template/default.latex eisvogel.tex
+          mkdir eisvogel
+          cp -r pandoc-latex-template-master/template-multi-file/* eisvogel/
 
-      - name: Criar pasta docs/
+      - name: Criar docs/
         run: mkdir -p docs
 
-      - name: Gerar PDF
+      - name: Gerar PDF com Eisvogel multi-file
         run: |
           pandoc README.md \
             --from markdown \
-            --template eisvogel.tex \
+            --template eisvogel/eisvogel.latex \
             --pdf-engine=xelatex \
+            --data-dir eisvogel \
             --toc \
             --listings \
             --metadata=title:"Dev Notes – CI/CD, Pipelines & TMMi" \
             --metadata=author:"Raquel G. de Souza" \
             -o docs/dev-notes.pdf
 
-      - name: Publicar artefato
+      - name: Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: dev-notes-pdf
+          name: dev-notes
           path: docs/dev-notes.pdf
