@@ -12,10 +12,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Instalar dependências
+      - name: Instalar dependências do sistema
         run: |
           sudo apt update
-          sudo apt install -y pandoc texlive texlive-latex-extra texlive-xetex unzip wget
+          sudo apt install -y \
+            pandoc \
+            librsvg2-bin \
+            texlive \
+            texlive-latex-extra \
+            texlive-xetex \
+            texlive-fonts-recommended \
+            texlive-fonts-extra \
+            fonts-sourcesanspro \
+            unzip \
+            wget
 
       - name: Baixar Eisvogel completo
         run: |
@@ -24,23 +34,23 @@ jobs:
           mkdir eisvogel
           cp -r pandoc-latex-template-master/template-multi-file/* eisvogel/
 
-      - name: Criar docs/
+      - name: Criar pasta docs/
         run: mkdir -p docs
 
-      - name: Gerar PDF com Eisvogel multi-file
+      - name: Gerar PDF
         run: |
           pandoc README.md \
             --from markdown \
             --template eisvogel/eisvogel.latex \
             --pdf-engine=xelatex \
             --data-dir eisvogel \
-            --toc \
             --listings \
+            --toc \
             --metadata=title:"Dev Notes – CI/CD, Pipelines & TMMi" \
             --metadata=author:"Raquel G. de Souza" \
             -o docs/dev-notes.pdf
 
-      - name: Artifact
+      - name: Publicar artefato
         uses: actions/upload-artifact@v4
         with:
           name: dev-notes
