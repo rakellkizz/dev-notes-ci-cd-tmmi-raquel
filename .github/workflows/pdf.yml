@@ -1,4 +1,4 @@
-name: Gerar PDF Automático (LaTeX Completo)
+name: Gerar PDF Automático
 
 on:
   push:
@@ -9,25 +9,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    container:
+      image: pandoc/latex:latest
+
     steps:
       - name: Checkout do repositório
         uses: actions/checkout@v4
 
-      - name: Atualizar pacotes
-        run: sudo apt-get update
-
-      - name: Instalar dependências do Pandoc + suporte a imagens SVG
-        run: |
-          sudo apt-get install -y pandoc librsvg2-bin
-
-      - name: Instalar LaTeX COMPLETO (TeXLive Full)
-        run: |
-          sudo apt-get install -y texlive-full
-
       - name: Criar pasta docs/
         run: mkdir -p docs
 
-      - name: Gerar PDF estilo LIVRO
+      - name: Gerar PDF estilo LIVRO (Pandoc + LaTeX)
         run: |
           pandoc README.md \
             --from markdown \
@@ -36,7 +28,7 @@ jobs:
             --variable fontsize=12pt \
             --variable papersize=a4 \
             --variable documentclass=report \
-            --highlight-style tango \
+            --highlight-style=tango \
             -o docs/DevNotes.pdf
 
       - name: Upload do PDF como artefato
