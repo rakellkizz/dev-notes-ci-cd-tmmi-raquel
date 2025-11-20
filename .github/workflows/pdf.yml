@@ -1,4 +1,4 @@
-name: Gerar PDF Automático
+name: Gerar PDF Profissional
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-pdf:
     runs-on: ubuntu-latest
 
     container:
@@ -19,20 +19,40 @@ jobs:
       - name: Criar pasta docs/
         run: mkdir -p docs
 
-      - name: Gerar PDF com suporte a emojis (XeLaTeX)
+      - name: Baixar template Eisvogel
         run: |
-          pandoc README.md \
+          apt-get update && apt-get install -y wget
+          wget -O eisvogel.latex https://github.com/Wandmalfarbe/pandoc-latex-template/raw/master/eisvogel.tex
+
+      - name: Gerar PDF profissional com capa
+        run: |
+          pandoc \
+            README.md \
+            ci-cd/*.md \
+            pipeline/*.md \
+            tmmi/tmmi/*.md \
+            linguagens/*.md \
+            go/*.md \
+            melhoria-continua/*.md \
+            testes-qa/*.md \
+            entrevistas/*.md \
             --from markdown \
             --pdf-engine=xelatex \
+            --template=eisvogel.latex \
             --toc \
-            --variable fontsize=12pt \
-            --variable papersize=a4 \
-            --variable documentclass=report \
-            --highlight-style=tango \
-            -o docs/DevNotes.pdf
+            -V title="Dev Notes – CI/CD, Pipelines & TMMi" \
+            -V subtitle="Estudos, práticas e fundamentos para equipes de Engenharia & QA" \
+            -V author="Raquel G. de Souza" \
+            -V date="\\today" \
+            -V titlepage=true \
+            -V titlepage-color="FFFFFF" \
+            -V titlepage-text-color="000000" \
+            -V titlepage-rule-color="000000" \
+            -V titlepage-rule-height=2 \
+            -o docs/dev-notes-raquel.pdf
 
       - name: Upload do PDF como artefato
         uses: actions/upload-artifact@v4
         with:
-          name: devnotes-pdf
-          path: docs/DevNotes.pdf
+          name: dev-notes-pdf
+          path: docs/dev-notes-raquel.pdf
