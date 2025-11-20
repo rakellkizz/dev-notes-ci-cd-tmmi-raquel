@@ -231,4 +231,4 @@ documentação técnica
 
 🔗 GitHub: https://github.com/rakellkizz
 
-💜 Trabalho com carinho e atenção aos detalhes
+💜 Trabalho com carinho e atenção aos detalhes - Raquel Souza
