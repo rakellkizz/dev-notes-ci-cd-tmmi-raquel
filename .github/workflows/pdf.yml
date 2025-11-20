@@ -25,12 +25,12 @@ jobs:
             texlive-latex-extra \
             wget unzip
 
-      # ✅ Baixa o repositório COMPLETO do Eisvogel (garantido!)
-      - name: Baixar template Eisvogel (zip oficial)
+      # 🔥 Baixar repositório completo e pegar o template correto
+      - name: Baixar template Eisvogel atualizado
         run: |
           wget https://github.com/Wandmalfarbe/pandoc-latex-template/archive/refs/heads/master.zip -O eisvogel.zip
           unzip eisvogel.zip
-          cp pandoc-latex-template-master/eisvogel.tex eisvogel.tex
+          cp pandoc-latex-template-master/template/eisvogel.tex eisvogel.tex
 
       - name: Criar pasta docs/
         run: mkdir -p docs
