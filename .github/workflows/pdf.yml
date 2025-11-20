@@ -13,33 +13,29 @@ jobs:
       - name: Checkout do repositório
         uses: actions/checkout@v4
 
-      - name: Atualizar pacotes
-        run: sudo apt update
-
-      - name: Instalar Pandoc + LaTeX necessário
+      - name: Instalar Pacotes Necessários
         run: |
+          sudo apt update
           sudo apt install -y pandoc \
-            texlive-latex-base \
-            texlive-latex-extra \
-            texlive-fonts-recommended \
-            texlive-fonts-extra \
+            texlive \
             texlive-xetex \
+            texlive-latex-extra \
             unzip wget
 
-      - name: Baixar Eisvogel (versão multi-file)
+      - name: Baixar Template Eisvogel Simples
         run: |
           wget https://github.com/Wandmalfarbe/pandoc-latex-template/archive/refs/heads/master.zip -O eisvogel.zip
           unzip eisvogel.zip
-          cp pandoc-latex-template-master/template-multi-file/eisvogel.latex eisvogel.latex
+          cp pandoc-latex-template-master/template/default.latex eisvogel.tex
 
       - name: Criar pasta docs/
         run: mkdir -p docs
 
-      - name: Gerar PDF com Eisvogel
+      - name: Gerar PDF
         run: |
           pandoc README.md \
             --from markdown \
-            --template eisvogel.latex \
+            --template eisvogel.tex \
             --pdf-engine=xelatex \
             --toc \
             --listings \
