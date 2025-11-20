@@ -1,36 +1,46 @@
-name: 📘 Gerar PDF Automático
+name: Gerar PDF Automático (LaTeX Completo)
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
-  gerar-pdf:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout do repositório
+      - name: Checkout do repositório
         uses: actions/checkout@v4
 
-      - name: 📦 Instalar Pandoc
-        run: sudo apt-get install -y pandoc
+      - name: Atualizar pacotes
+        run: sudo apt-get update
 
-      - name: 📄 Gerar PDF do conteúdo
+      - name: Instalar dependências do Pandoc + suporte a imagens SVG
+        run: |
+          sudo apt-get install -y pandoc librsvg2-bin
+
+      - name: Instalar LaTeX COMPLETO (TeXLive Full)
+        run: |
+          sudo apt-get install -y texlive-full
+
+      - name: Criar pasta docs/
+        run: mkdir -p docs
+
+      - name: Gerar PDF estilo LIVRO
         run: |
           pandoc README.md \
-            ci-cd/*.md \
-            pipeline/*.md \
-            tmmi/**/*.md \
-            linguagens/*.md \
-            go/*.md \
-            melhoria-continua/*.md \
-            testes-qa/*.md \
-            entrevistas/*.md \
-            -o docs/dev-notes-raquel.pdf
+            --from markdown \
+            --pdf-engine=pdflatex \
+            --toc \
+            --variable fontsize=12pt \
+            --variable papersize=a4 \
+            --variable documentclass=report \
+            --highlight-style tango \
+            -o docs/DevNotes.pdf
 
-      - name: 📤 Upload do PDF como artefato
+      - name: Upload do PDF como artefato
         uses: actions/upload-artifact@v4
         with:
-          name: dev-notes-pdf
-          path: docs/dev-notes-raquel.pdf
+          name: devnotes-pdf
+          path: docs/DevNotes.pdf
