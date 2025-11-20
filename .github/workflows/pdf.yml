@@ -1,0 +1,36 @@
+name: 📘 Gerar PDF Automático
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  gerar-pdf:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: 📦 Instalar Pandoc
+        run: sudo apt-get install -y pandoc
+
+      - name: 📄 Gerar PDF do conteúdo
+        run: |
+          pandoc README.md \
+            ci-cd/*.md \
+            pipeline/*.md \
+            tmmi/**/*.md \
+            linguagens/*.md \
+            go/*.md \
+            melhoria-continua/*.md \
+            testes-qa/*.md \
+            entrevistas/*.md \
+            -o docs/dev-notes-raquel.pdf
+
+      - name: 📤 Upload do PDF como artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: dev-notes-pdf
+          path: docs/dev-notes-raquel.pdf

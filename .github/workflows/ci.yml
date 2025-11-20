@@ -1,0 +1,25 @@
+name: 📘 Build & Validate – Dev Notes
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  check-markdown:
+    name: 🔍 Validar arquivos Markdown
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Baixar repositório
+        uses: actions/checkout@v4
+
+      - name: 🔧 Instalar Markdown Linter
+        run: |
+          sudo npm install -g markdownlint-cli
+
+      - name: 🧹 Validar Markdown
+        run: |
+          markdownlint "**/*.md" || true
