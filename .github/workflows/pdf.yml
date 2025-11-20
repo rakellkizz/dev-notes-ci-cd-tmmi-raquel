@@ -20,35 +20,34 @@ jobs:
         run: |
           sudo apt install -y pandoc \
             texlive-latex-base \
+            texlive-latex-extra \
             texlive-fonts-recommended \
             texlive-fonts-extra \
-            texlive-latex-extra \
-            wget unzip
+            texlive-xetex \
+            unzip wget
 
-      # 🔥 Baixar repositório completo e pegar o template correto
-      - name: Baixar template Eisvogel atualizado
+      - name: Baixar Eisvogel (versão multi-file)
         run: |
           wget https://github.com/Wandmalfarbe/pandoc-latex-template/archive/refs/heads/master.zip -O eisvogel.zip
           unzip eisvogel.zip
-          cp pandoc-latex-template-master/template/eisvogel.tex eisvogel.tex
+          cp pandoc-latex-template-master/template-multi-file/eisvogel.latex eisvogel.latex
 
       - name: Criar pasta docs/
         run: mkdir -p docs
 
-      - name: Gerar PDF profissional com Eisvogel
+      - name: Gerar PDF com Eisvogel
         run: |
           pandoc README.md \
             --from markdown \
-            --template eisvogel.tex \
-            --listings \
-            --toc \
+            --template eisvogel.latex \
             --pdf-engine=xelatex \
+            --toc \
+            --listings \
             --metadata=title:"Dev Notes – CI/CD, Pipelines & TMMi" \
-            --metadata=subtitle:"Estudos, práticas e fundamentos para Engenharia e Qualidade" \
             --metadata=author:"Raquel G. de Souza" \
             -o docs/dev-notes.pdf
 
-      - name: Publicar PDF como artefato
+      - name: Publicar artefato
         uses: actions/upload-artifact@v4
         with:
           name: dev-notes-pdf
