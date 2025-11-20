@@ -2,7 +2,7 @@ name: Gerar PDF Profissional
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   workflow_dispatch:
 
 jobs:
@@ -13,31 +13,37 @@ jobs:
       - name: Checkout do repositório
         uses: actions/checkout@v4
 
-      - name: Atualizar pacotes
-        run: sudo apt-get update
-
-      - name: Instalar Pandoc + LaTeX básico + ferramentas
+      - name: Instalar Pandoc
         run: |
-          sudo apt-get install -y pandoc texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra wget
+          sudo apt update
+          sudo apt install -y pandoc
 
-      - name: Baixar template Eisvogel
+      - name: Instalar LaTeX mínimo necessário
         run: |
-          wget https://raw.githubusercontent.com/Wandmalfarbe/pandoc-latex-template/master/eisvogel.tex -O eisvogel.tex
+          sudo apt install -y \
+            texlive-latex-base \
+            texlive-fonts-recommended \
+            texlive-latex-extra \
+            texlive-fonts-extra
+
+      - name: Baixar Template Eisvogel
+        run: |
+          wget https://raw.githubusercontent.com/Wandmalfarbe/pandoc-latex-template/master/templates/eisvogel.tex -O eisvogel.tex
 
       - name: Criar pasta docs/
         run: mkdir -p docs
 
-      - name: Gerar PDF profissional (tema Eisvogel)
+      - name: Gerar PDF profissional com Eisvogel
         run: |
           pandoc README.md \
             --from markdown \
-            --output docs/DevNotes.pdf \
             --template eisvogel.tex \
             --listings \
             --toc \
             --metadata=title:"Dev Notes – CI/CD, Pipelines & TMMi" \
             --metadata=subtitle:"Estudos, práticas e fundamentos para equipes de Engenharia & QA" \
-            --metadata=author:"Raquel G. de Souza"
+            --metadata=author:"Raquel G. de Souza" \
+            -o docs/DevNotes.pdf
 
       - name: Upload do PDF como artefato
         uses: actions/upload-artifact@v4
