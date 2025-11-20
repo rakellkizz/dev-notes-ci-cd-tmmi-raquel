@@ -2,7 +2,7 @@ name: Gerar PDF Automático
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   workflow_dispatch:
 
 jobs:
@@ -19,11 +19,11 @@ jobs:
       - name: Criar pasta docs/
         run: mkdir -p docs
 
-      - name: Gerar PDF estilo LIVRO (Pandoc + LaTeX)
+      - name: Gerar PDF com suporte a emojis (XeLaTeX)
         run: |
           pandoc README.md \
             --from markdown \
-            --pdf-engine=pdflatex \
+            --pdf-engine=xelatex \
             --toc \
             --variable fontsize=12pt \
             --variable papersize=a4 \
